@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ChangeEvent, type DragEvent, type FormEvent } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ChangeEvent, type DragEvent, type FormEvent } from 'react'
 import { analyzeArtwork } from './api'
 import type { AnalyzeArtResponse, ArtworkResult } from './types'
 import './App.css'
@@ -66,34 +66,7 @@ function App() {
   const [error, setError] = useState<string | null>(null)
   const [response, setResponse] = useState<AnalyzeArtResponse | null>(null)
 
-  useEffect(() => {
-    if (!isLoading) {
-      return
-    }
-
-    const intervalId = window.setInterval(() => {
-      setLoadingPhase((prev) => (prev + 1) % LOADING_PHASES.length)
-    }, 2200)
-
-    return () => window.clearInterval(intervalId)
-  }, [isLoading])
-
-  const previewUrl = useMemo(() => {
-    if (!file) {
-      return null
-    }
-    return URL.createObjectURL(file)
-  }, [file])
-
-  useEffect(() => {
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl)
-      }
-    }
-  }, [previewUrl])
-
-  function applyPickedFile(nextFile: File | null) {
+  const applyPickedFile = useCallback((nextFile: File | null) => {
     if (!nextFile) {
       return
     }
@@ -110,7 +83,64 @@ function App() {
 
     setFile(nextFile)
     setError(null)
-  }
+  }, [])
+
+  useEffect(() => {
+    if (!isLoading) {
+      return
+    }
+
+    const intervalId = window.setInterval(() => {
+      setLoadingPhase((prev) => (prev + 1) % LOADING_PHASES.length)
+    }, 2200)
+
+    return () => window.clearInterval(intervalId)
+  }, [isLoading])
+
+  useEffect(() => {
+    const handlePaste = (event: ClipboardEvent) => {
+      const clipboardData = event.clipboardData
+      if (!clipboardData) {
+        return
+      }
+
+      const itemWithImage = Array.from(clipboardData.items).find(
+        (item) => item.kind === 'file' && item.type.startsWith('image/'),
+      )
+      const pastedImage =
+        itemWithImage?.getAsFile() ?? Array.from(clipboardData.files).find((fileEntry) => fileEntry.type.startsWith('image/'))
+
+      if (!pastedImage) {
+        return
+      }
+
+      event.preventDefault()
+      const fileName = pastedImage.name?.trim() || `clipboard-image-${Date.now()}.png`
+      const fileForUpload = new File([pastedImage], fileName, {
+        type: pastedImage.type || 'image/png',
+        lastModified: Date.now(),
+      })
+      applyPickedFile(fileForUpload)
+    }
+
+    window.addEventListener('paste', handlePaste)
+    return () => window.removeEventListener('paste', handlePaste)
+  }, [applyPickedFile])
+
+  const previewUrl = useMemo(() => {
+    if (!file) {
+      return null
+    }
+    return URL.createObjectURL(file)
+  }, [file])
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl)
+      }
+    }
+  }, [previewUrl])
 
   function handleInputChange(event: ChangeEvent<HTMLInputElement>) {
     const pickedFile = event.target.files?.[0] ?? null
@@ -197,6 +227,7 @@ function App() {
               <div className="drop-zone-placeholder">
                 <strong>Перетащи файл сюда</strong>
                 <span>или нажми, чтобы выбрать изображение</span>
+                <span>можно просто вставить скрин: Ctrl/Cmd + V</span>
               </div>
             )}
           </label>
