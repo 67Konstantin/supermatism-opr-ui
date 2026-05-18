@@ -199,16 +199,16 @@ function App() {
       <div className="shape shape-yellow" aria-hidden="true" />
 
       <section className="hero-block">
-        <p className="eyebrow">AI Art Intelligence</p>
-        <h1>Supermatism OPR UI</h1>
+        <p className="eyebrow">Анализ искусства с AI</p>
+        <h1>Супрематизм OPR</h1>
         <p className="hero-copy">
           Загрузи произведение, получи структурный визуальный анализ и список максимально похожих работ из
           открытых источников.
         </p>
         <div className="hero-tags" aria-label="Возможности">
-          <span>Suprematism-ready</span>
-          <span>FastAPI connected</span>
-          <span>Structured JSON</span>
+          <span>Стиль: супрематизм</span>
+          <span>Интеграция с FastAPI</span>
+          <span>Структурированный JSON</span>
         </div>
       </section>
 
@@ -285,15 +285,15 @@ function App() {
                 <h3>Композиция</h3>
                 <ul>
                   <li>
-                    <span>Layout</span>
+                    <span>Композиционная схема</span>
                     <strong>{response.analysis.composition.layout}</strong>
                   </li>
                   <li>
-                    <span>Perspective</span>
+                    <span>Перспектива</span>
                     <strong>{response.analysis.composition.perspective}</strong>
                   </li>
                   <li>
-                    <span>Symmetry</span>
+                    <span>Симметрия</span>
                     <strong>{response.analysis.composition.symmetry}</strong>
                   </li>
                 </ul>
@@ -308,15 +308,15 @@ function App() {
                 </div>
                 <ul>
                   <li>
-                    <span>Contrast</span>
+                    <span>Контраст</span>
                     <strong>{response.analysis.color.contrast}</strong>
                   </li>
                   <li>
-                    <span>Saturation</span>
+                    <span>Насыщенность</span>
                     <strong>{response.analysis.color.saturation}</strong>
                   </li>
                   <li>
-                    <span>Tonal transitions</span>
+                    <span>Тональные переходы</span>
                     <strong>{response.analysis.color.tonalTransitions}</strong>
                   </li>
                 </ul>
@@ -326,15 +326,15 @@ function App() {
                 <h3>Фактура</h3>
                 <ul>
                   <li>
-                    <span>Brushwork</span>
+                    <span>Мазок</span>
                     <strong>{response.analysis.texture.brushwork}</strong>
                   </li>
                   <li>
-                    <span>Surface</span>
+                    <span>Поверхность</span>
                     <strong>{response.analysis.texture.surface}</strong>
                   </li>
                   <li>
-                    <span>Volume</span>
+                    <span>Объём</span>
                     <strong>{response.analysis.texture.volumeModeling}</strong>
                   </li>
                 </ul>
