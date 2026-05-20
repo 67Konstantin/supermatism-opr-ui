@@ -366,6 +366,14 @@ function App() {
           </section>
         </>
       ) : null}
+
+      <section className="panel project-footer">
+        <p className="project-note">Проект создан в учебных целях.</p>
+        <p className="project-authors">
+          Работу сделали: Дробязкин Константин, Туманов Артемий, Казбанов Максим, Кулекенов Дмитрий, Блинков
+          Егор.
+        </p>
+      </section>
     </main>
   )
 }

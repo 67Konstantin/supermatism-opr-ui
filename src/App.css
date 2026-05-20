@@ -426,6 +426,27 @@
   color: var(--muted);
 }
 
+.project-footer {
+  text-align: center;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.project-note {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+}
+
+.project-authors {
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
 @keyframes pulse {
   0%,
   100% {
