@@ -42,6 +42,10 @@ export async function analyzeArtwork(file: File): Promise<AnalyzeArtResponse> {
   }
 
   if (!response.ok) {
+    if (response.status === 413) {
+      throw new Error('Файл слишком большой для прокси-сервера. Уменьши изображение или увеличь лимит загрузки на сервере.')
+    }
+
     let detail = `Backend вернул ошибку ${response.status}.`
     try {
       const contentType = response.headers.get('content-type') ?? ''
