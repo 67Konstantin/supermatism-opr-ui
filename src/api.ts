@@ -25,18 +25,37 @@ export async function analyzeArtwork(file: File): Promise<AnalyzeArtResponse> {
   const formData = new FormData()
   formData.append('file', file)
 
-  const response = await fetch(buildAnalyzeUrl(), {
-    method: 'POST',
-    body: formData,
-  })
+  let response: Response
+  try {
+    response = await fetch(buildAnalyzeUrl(), {
+      method: 'POST',
+      body: formData,
+    })
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw new Error(
+        `Не удалось подключиться к backend (${API_BASE_URL}). Проверь, что сервер запущен на порту 8000 и CORS разрешает http://localhost:5173.`,
+        { cause: error },
+      )
+    }
+    throw error
+  }
 
   if (!response.ok) {
-    let detail = `Request failed with status ${response.status}`
+    let detail = `Backend вернул ошибку ${response.status}.`
     try {
-      const payload = await response.json()
-      const parsedDetail = extractErrorMessage(payload)
-      if (parsedDetail) {
-        detail = parsedDetail
+      const contentType = response.headers.get('content-type') ?? ''
+      if (contentType.includes('application/json')) {
+        const payload = await response.json()
+        const parsedDetail = extractErrorMessage(payload)
+        if (parsedDetail) {
+          detail = parsedDetail
+        }
+      } else {
+        const rawText = (await response.text()).trim()
+        if (rawText) {
+          detail = rawText
+        }
       }
     } catch {
       // keep default detail
